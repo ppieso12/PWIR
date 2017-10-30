@@ -26,6 +26,48 @@ procedure Lab4tree is
       end if;
 
    end Insert;
+   
+   type info_search is
+         record
+            Data:Integer;
+            Lvl:Integer;
+            Is_found:Boolean;
+         end record;
+   
+   function search(Nod : in out Node_Ptr; D : in Integer; Lvl : in Integer) return info_search is
+	   Next_lvl: Integer;
+   begin
+       if Nod = null then
+          return (D, Lvl, False);
+       end if;
+	   if Nod.Data = D then
+		  return (D, Lvl, True);
+	   end if;
+	   Next_lvl := Lvl + 1;
+       if D<Nod.Data then
+          return search(Nod.Left,D, Next_lvl );
+       else
+          return search(Nod.Right,D, Next_lvl);
+       end if;
+   end search;
+	
+   procedure delete(Nod : in out Node_Ptr; D : in Integer) is
+	   --DOPISAC DELETE
+   begin
+       if Nod = null then
+          return;
+       end if;
+	   if Nod.Data = D then
+		  return (D, Lvl, True);
+	   end if;
+       if D<Nod.Data then
+          Insert(Nod.Left,D);
+       else
+          Insert(Nod.Right,D);
+       end if;
+	   
+   end delete; 
+   
    procedure Print(Nod : access Node) is --Wstawianie na pocz
       N : access Node := Nod;
    begin
@@ -48,11 +90,18 @@ procedure Lab4tree is
 
    end Print;
     Tree : Node_Ptr := Null;
+	pos: info_search;
 begin
   Insert(Tree,10);
   Insert(Tree,5);
-   Insert(Tree,15);
-   Put_Line(Tree.Left.Data'Image);
-   --Print(Tree);
+  Insert(Tree,15);
+  Insert(Tree,3);
+  Insert(Tree,14);
+  
+  --Put_Line(Tree.Left.Data'Img);
+  Print(Tree);
+  pos := search(Tree, 15, 1);
+  New_line;
+  Put_Line(pos.Data'Img & " on Lvl "& pos.Lvl'Img & " is found " & pos.Is_found'Img);
 
 end Lab4tree;
