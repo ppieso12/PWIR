@@ -5,7 +5,10 @@
 %http://www.newthinktank.com/2017/04/learn-erlang-one-video/
 %http://erlang.org/doc/getting_started/conc_prog.html
 -import(math,[pi/0]).
-
+%3 rodzaje wyjatkow
+%1 error
+%2 exit
+%3 throw
 -export([add/2, head/1, sum/1, maps/0, main/0, lmalejaca/1,lros/1, parzyste/1, parzyste2/1, parzyste3/1, list_index/2] ).
 
 add(A1,A2) -> 
