@@ -1,12 +1,13 @@
-%% @author Mateusz
+ %% @author Mateusz
 %% @doc @todo Add description to learn1.
--compile([export_all]).
 -module(tut).
+-compile([export_all]).
 %http://www.newthinktank.com/2017/04/learn-erlang-one-video/
 %http://erlang.org/doc/getting_started/conc_prog.html
 -import(math,[pi/0]).
 
 -export([add/2, head/1, sum/1, maps/0, main/0, lmalejaca/1,lros/1, parzyste/1, parzyste2/1, parzyste3/1, list_index/2] ).
+
 
 add(A1,A2) -> 
 	A1+A2.
@@ -150,8 +151,9 @@ parzyste(N) when N rem 2 /= 0 -> parzyste(N-1).
 
 parzyste2(1) -> [];
 parzyste2(N) ->
-	if N rem 2 == 0 -> parzyste(N-1) ++ [N];
-	   N rem 2 /= 0 -> parzyste(N-1)
+	if
+		N rem 2 == 0 -> parzyste(N-1) ++ [N];
+		N rem 2 /= 0 -> parzyste(N-1)
 	end.
 
 parzyste3(1) -> [];
@@ -169,5 +171,111 @@ list_index([H|T],N) ->
 		true -> [H*2] ++ list_index(T, N - 1);
 		false -> [H] ++ list_index(T, N - 1)
 	end.
+
+
+sum(N, M) when N > M -> exit(self(), kill);
+sum(M, M) -> M;
+sum(N, M) -> N + sum(N+1, M).
+
+%Napisz funkcję, któradla danego N zwróci listę postaci [1,2,...,N-1,N].
+f1(1) -> [1];
+f1(N) -> f1(N-1) ++ [N].
+
+%. Napisz funkcję, która wyświetli liczby naturalne pomiędzy 1 a N. Każda liczba ma zostać wyświetlona w nowym wierszu.
+
+f2(1) -> io:fwrite("Liczba: 1\n");
+f2(N) -> 
+	f2(N-1),
+	io:fwrite("Liczba: ~p\n",[N]).
+
+f2p(2) -> io:fwrite("Liczba: 2\n");
+f2p(N) when N < 2 -> io:fwrite("Brak");
+f2p(N) when N rem 2 == 0 ->
+	f2p(N-1),
+	io:fwrite("Liczba: ~p\n",[N]);
+f2p(N) when N rem 2 /= 0 ->
+	f2p(N-1).
+
+%Wypisz N kolejnychliczb trójkątnych
+ft(1) -> [];
+ft(N) -> ft(N-1) ++ [(N*(N+1))/2].
+
+pitagorejskie(L) -> [[X, Y, Z] || X <-L, Y <-L, Z <- L, X*X + Y*Y == Z*Z].
+
+% Napisz funkcję, która dla podanej listy L i indeksu Index zwróci nową listę, gdzieelement pod wskazanym
+% indeksem podwoi swoją wartość.
+f4([],_) -> [];
+f4([H|T],Index) when H == Index -> [H*2] ++ f4(T,Index);
+f4([H|T],Index) -> [H] ++ f4(T,Index).
+
+solution(L)->
+	A = [X||X<-L,X rem 2 == 1],
+	lists:reverse(A).
+
+
+%io:fwrite("Liczba: ~p\n",[N]).
+%	lists:reverse(List1)
+%	lists:seq(From, To)
+%   is_integer(H)
+%   timer:sleep(250),
+%   lists:nth(N, List)
+%   lists:delete(Elem, List1)
+%   rand:uniform(5)
+%	maps:put(Key, Value, Map1)
+%	erlang:send(Dest, Msg)
+%	lists:min(List)
+
+
+%	lists:seq(1, 7) -- lists:seq(7, 9).  ODEJMOWANIE LIST --
+%my_func() -> [rand:uniform() || _ <- lists:seq(1,10)].
+
+%(learning@Lenovo-PC)2> [1 || _ <- lists:seq(1, 5)].
+%[1,1,1,1,1]
+
+% FORK BOMB
+start() ->
+	[spawn(?MODULE,parent,[]) || _ <- lists:seq(1,3)].
+
+parent() ->
+	ListChild = [spawn(?MODULE,child,[]) || _ <- lists:seq(1, 3)],
+	loop(ListChild).
+
+loop(L) -> lists:foreach(fun(Pid) -> Pid!{self(), message} end, L).
+
+child() ->
+	receive
+		{Pid, message} -> io:fwrite("wiad od ~p\n", [Pid])				  
+	end.
+
+%map wielowątkowo, moja wersja
+
+thread(X,Fun,ParrentPID) -> ParrentPID ! {wiad,Fun(X)}.
+ 
+mapPIDS([],_) -> [];
+mapPIDS([H|T],Fun) -> [spawn(?MODULE, thread, [H, Fun, self()])] ++ mapPIDS(T,Fun).
+ 
+mainMap(List, Fun) -> 
+    PIDs = mapPIDS(List,Fun),
+    gather_all2(length(PIDs)).
+ 
+gather_all2(0) -> [];
+gather_all2(N) ->
+	mygather() ++ gather_all2(N-1).
+
+mygather() ->
+	receive
+		{wiad, W} -> [W]
+	after
+		3000 -> error
+	end.
+
+% inna
+%erlang:register(RegName, spawn()).
+%erlang:whereis(RegName).
+%exit(RegName, kill).
+
+fibo_reku(0) -> 0;
+fibo_reku(1) -> 1;
+fibo_reku(N) -> fibo_reku(N-1) + fibo_reku(N-2).
 
 
