@@ -95,48 +95,48 @@ begin
   end select;
 
 
---    select
---
---      rozpocznij.odbierz_wyniki;
---
---    or
---      delay 1.0;
---        put_line("Za dlugie oczekiwanie");
---
---
---
---
---
---    end select;
+  select
+
+    rozpocznij.odbierz_wyniki;
+
+  or
+    delay 1.0;
+      put_line("Za dlugie oczekiwanie");
 
 
 
 
---
---    W:= dziel(2.0,0.0);
---    Put_Line(W'Img);
---
---  exception
---    when E: others => Put_Line(Exception_Name(E) & "  "& Exception_Message(E));
+
+  end select;
 
 
 
 
---    loop
---      fixworld;
---    end loop;
+
+  W:= dziel(2.0,0.0);
+  Put_Line(W'Img);
+
+exception
+  when E: others => Put_Line(Exception_Name(E) & "  "& Exception_Message(E));
 
 
 
 
---    loop
---
---
---      Nastepny:= Nastepny + Okres;
---      blabla;
---      delay until Nastepny;
---
---    end loop;
+  loop
+    fixworld;
+  end loop;
+
+
+
+
+  loop
+
+
+    Nastepny:= Nastepny + Okres;
+    blabla;
+    delay until Nastepny;
+
+  end loop;
 
 
 
